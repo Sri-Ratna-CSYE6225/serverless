@@ -3,6 +3,8 @@ name: Build and deploy webapp
 env:
   ARTIFACT_NAME: lambda_function.zip
   AWS_REGION: us-east-1
+  AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+  AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
  
 on:
   push:
