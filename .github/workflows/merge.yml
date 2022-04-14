@@ -37,16 +37,6 @@ jobs:
           aws-access-key-id: ${{env.AWS_ACCESS_KEY}}
           aws-secret-access-key: ${{env.AWS_SECRET_KEY}}
           aws-region: ${{env.AWS_REGION}}
-
-      # - name: Build Packer
-      #   uses: ExitoLab/packer_build_action_aws@v0.2.10
-      #   with:
-      #     templateFile: 'ami.json'
-      #     varFile: 'dev-vars.json'
-      #   env:
-      #     AWS_REGION: us-east-1
-      #     AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-      #     AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
       
       - name: Copy Artifact to S3
         run: |
