@@ -5,8 +5,6 @@ var ses = new aws.SES({
 });
 var DynamoDB = new aws.DynamoDB.DocumentClient();
 
-// require('dotenv').config();
-
 exports.handler = (event, context, callback) => {
 
     let message = JSON.parse(event.Records[0].Sns.Message);
@@ -17,7 +15,7 @@ exports.handler = (event, context, callback) => {
     console.log('verify email', verifyMsg)
 
     if (!verifyMsg) {
-        console.log('in if loop of verify')
+        console.log('inside verify check')
         sendEmail(message);
     }
 
@@ -28,7 +26,7 @@ var sendEmail = (data) => {
     let link = `http://${data.domainName}/v1/verifyUserEmail?email=${data.username}&token=${data.token}`;
 
     let body = "Hi " + data.first_name + ",\n\n" +
-    "We just need to verify your email address before you can access our portal. Verify your email address: " + link + "\n\n\n"
+    "We just need to verify your email address before you can access our portal. Verify your email address: " + link + "\n\n\n" +
     "Kind Regards, Sri Ratna" + "\n\n\n" 
     let from = "no-reply@" + data.domainName
     let emailParams = {
