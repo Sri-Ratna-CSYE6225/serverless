@@ -1,0 +1,57 @@
+name: Build and deploy webapp
+
+env:
+  ARTIFACT_NAME: lambda_function.zip
+  AWS_REGION: us-east-1
+ 
+on:
+  push:
+    branches:
+      - main
+jobs:
+    lambda_ci_cd:
+      runs-on: ubuntu-latest
+      steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node JS
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y wget zip unzip jq
+          npm install crypto
+
+      - name: Build Deployment Artifacts
+        run: |
+          zip -r ${{ env.ARTIFACT_NAME }} index.js
+          
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{env.AWS_ACCESS_KEY}}
+          aws-secret-access-key: ${{env.AWS_SECRET_KEY}}
+          aws-region: ${{env.AWS_REGION}}
+
+      # - name: Build Packer
+      #   uses: ExitoLab/packer_build_action_aws@v0.2.10
+      #   with:
+      #     templateFile: 'ami.json'
+      #     varFile: 'dev-vars.json'
+      #   env:
+      #     AWS_REGION: us-east-1
+      #     AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      #     AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+      
+      - name: Copy Artifact to S3
+        run: |
+          aws s3 cp ${{ env.ARTIFACT_NAME }} s3://${{ secrets.LAMBDA_BUCKET }}/${{ env.ARTIFACT_NAME }}
+
+      - name: Function for updating lambda
+        run: |
+          aws lambda update-function-code --function-name send-email-function --region us-east-1 --zip-file fileb://${{ env.ARTIFACT_NAME }}
+
+      
