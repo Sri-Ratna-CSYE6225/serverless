@@ -23,7 +23,7 @@ exports.handler = (event, context, callback) => {
 
 var sendEmail = (data) => {
 
-    let link = `http://${data.domainName}/v1/verifyUserEmail?email=${data.username}&token=${data.token}`;
+    let link = `https://${data.domainName}/v1/verifyUserEmail?email=${data.username}&token=${data.token}`;
 
     let body = "Hi " + data.first_name + ",\n\n" +
     "We just need to verify your email address before you can access our portal. Verify your email address here: " + link + "\n\n\n" +
